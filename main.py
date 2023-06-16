@@ -11,9 +11,9 @@ pygame.display.set_caption('Game Name Here')    # Window Name here
 clock = pygame.time.Clock()
 test_font = pygame.font.Font(None, 50)
 
-surface_background = pygame.image.load('image/background1.jpg')
+surface_background = pygame.image.load('image/background1.jpg').convert()
 surface_gameTitle = test_font.render('Robot Assistant', True, 'White')
-
+#pygame.transform.flip(surface_background, True, False)
 
 while True:
     for event in pygame.event.get():
