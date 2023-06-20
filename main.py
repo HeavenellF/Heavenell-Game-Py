@@ -11,11 +11,13 @@ pygame.display.set_caption('Game Name Here')    # Window Name here
 clock = pygame.time.Clock()
 test_font = pygame.font.Font(None, 50)
 
-surface_background = pygame.image.load('image/background1.jpg').convert()
-surface_gameTitle = test_font.render('Robot Assistant', True, 'White')
+background_surf = pygame.image.load('image/background1.jpg').convert()
+gameTitle_surf = test_font.render('Robot Assistant', True, 'White')
+
+player_surf = pygame.image.load('image/player.png').convert_alpha()
+player_rect = player_surf.get_rect(midbottom= (400,350))
 #pygame.transform.flip(surface_background, True, False)
-player_surface =
-player_rect = player_surface.get_rect(midbottom = )
+
 
 while True:
     for event in pygame.event.get():
@@ -23,8 +25,10 @@ while True:
             pygame.quit()
             exit()
     
-    screen.blit(surface_background,(100,0))
-    screen.blit(surface_gameTitle,(275, 30))
+    screen.blit(background_surf,(100,0))
+    screen.blit(gameTitle_surf,(275, 30))
+
+    screen.blit(player_surf,player_rect)
 
     pygame.display.update()
     clock.tick(fps)
