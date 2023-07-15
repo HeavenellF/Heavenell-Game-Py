@@ -9,7 +9,7 @@ pygame.init()
 screen = pygame.display.set_mode((width,height))
 pygame.display.set_caption('Game Name Here')    # Window Name here
 clock = pygame.time.Clock()
-test_font = pygame.font.Font('font/Pixeltype.ttf', 50)
+test_font = pygame.font.Font('font/pandabakery.ttf', 50)
 
 background_surf = pygame.image.load('image/background1.jpg').convert()
 
