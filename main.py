@@ -31,17 +31,22 @@ while True:
         # click to get the Cord of the Cursor
         if event.type == pygame.MOUSEBUTTONDOWN:
             print(event.pos)
+            if player_rect.collidepoint(event.pos):
+                player_gravity = -15
         
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
-                print('Jump')
-    
+            if event.key == pygame.K_SPACE and player_rect.bottom == 350:
+                player_gravity = -15
+
+    # Title and Background
     screen.blit(background_surf,(0,0))
     screen.blit(gameTitle_surf,gameTitle_rect)
 
     # Player
-    player_gravity += 0.25
+    player_gravity += 0.5
     player_rect.y += player_gravity
+    if player_rect.bottom >= 350:
+        player_rect.bottom = 350
     screen.blit(player_surf,player_rect)
 
 
