@@ -18,6 +18,7 @@ gameTitle_rect = gameTitle_surf.get_rect(midtop=(width/2,30))
 
 player_surf = pygame.image.load('image/player.png').convert_alpha()
 player_rect = player_surf.get_rect(midbottom= (width/2,350))
+player_gravity = 0
 
 #pygame.transform.flip(surface_background, True, False)
 
@@ -38,6 +39,9 @@ while True:
     screen.blit(background_surf,(0,0))
     screen.blit(gameTitle_surf,gameTitle_rect)
 
+    # Player
+    player_gravity += 0.25
+    player_rect.y += player_gravity
     screen.blit(player_surf,player_rect)
 
 
