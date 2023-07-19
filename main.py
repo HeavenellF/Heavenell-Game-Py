@@ -21,6 +21,7 @@ gameTitle_rect = gameTitle_surf.get_rect(midtop=(width/2,30))
 player_surf = pygame.image.load('image/player.png').convert_alpha()
 player_rect = player_surf.get_rect(midbottom= (width/2,350))
 player_gravity = 0
+player_direction = 0
 
 #pygame.transform.flip(surface_background, True, False)
 
@@ -41,6 +42,17 @@ while True:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE and player_rect.bottom >= 350:
                     player_gravity = -15
+                if event.key == pygame.K_a:
+                    player_direction = -1
+                if event.key == pygame.K_d:
+                    player_direction = 1
+
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_a and player_direction == -1:
+                    player_direction = 0
+                if event.key == pygame.K_d and player_direction == 1:
+                    player_direction = 0
+
         else:
             if event.type == pygame.KEYDOWN:
                 player_rect.bottom = 350
@@ -55,6 +67,7 @@ while True:
         # Player
         player_gravity += 0.5
         player_rect.y += player_gravity
+        player_rect.x += player_direction*2
         if player_rect.bottom >= 350:
             player_rect.bottom = 350
         screen.blit(player_surf,player_rect)
