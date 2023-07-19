@@ -11,6 +11,8 @@ pygame.display.set_caption('Game Name Here')    # Window Name here
 clock = pygame.time.Clock()
 test_font = pygame.font.Font('font/pandabakery.ttf', 50)
 
+game_active = False
+
 background_surf = pygame.image.load('image/background1.jpg').convert()
 
 gameTitle_surf = test_font.render('Robot Assistant', True, 'White')
@@ -28,26 +30,40 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
-        # click to get the Cord of the Cursor
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            print(event.pos)
-            if player_rect.collidepoint(event.pos):
-                player_gravity = -15
         
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE and player_rect.bottom == 350:
-                player_gravity = -15
+        if game_active:
+            # click to get the Cord of the Cursor
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                print(event.pos)
+                if player_rect.collidepoint(event.pos):
+                    player_gravity = -15
+            
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE and player_rect.bottom >= 350:
+                    player_gravity = -15
+        else:
+            if event.type == pygame.KEYDOWN:
+                player_rect.bottom = 350
+                game_active = True
 
-    # Title and Background
-    screen.blit(background_surf,(0,0))
-    screen.blit(gameTitle_surf,gameTitle_rect)
 
-    # Player
-    player_gravity += 0.5
-    player_rect.y += player_gravity
-    if player_rect.bottom >= 350:
-        player_rect.bottom = 350
-    screen.blit(player_surf,player_rect)
+    if game_active:
+        # Title and Background
+        screen.blit(background_surf,(0,0))
+        screen.blit(gameTitle_surf,gameTitle_rect)
+
+        # Player
+        player_gravity += 0.5
+        player_rect.y += player_gravity
+        if player_rect.bottom >= 350:
+            player_rect.bottom = 350
+        screen.blit(player_surf,player_rect)
+
+        if player_rect.top <= 0:
+            game_active = False
+        
+    else:
+        screen.fill('Pink')
 
 
     pygame.display.update()
