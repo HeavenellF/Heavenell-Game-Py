@@ -2,8 +2,17 @@ import pygame
 from sys import exit
 
 def display_time():
-    current_time = pygame.time.get_ticks()
-    time_surf = font2.render(f'{current_time}',False,'White')
+    current_time = pygame.time.get_ticks() - start_time
+
+    minutes = current_time // 60000
+    seconds = (current_time % 60000) // 1000
+    # Convert to strings and add leading zeros if necessary
+    minutes_str = str(minutes).zfill(2)
+    seconds_str = str(seconds).zfill(2)
+    # Create the time string in mm:ss format
+    time_str = f'{minutes_str}:{seconds_str}'
+
+    time_surf = font2.render(f'{time_str}',False,'White')
     time_rect = time_surf.get_rect(center = (550,25))
     screen.blit(time_surf,time_rect)
 
@@ -18,9 +27,11 @@ clock = pygame.time.Clock()
 font1 = pygame.font.Font('font/pandabakery.ttf', 50)
 font2 = pygame.font.Font('font/pandabakery.ttf', 20)
 
+start_time = 0
 game_active = False
 
 background_surf = pygame.image.load('image/background1.jpg').convert()
+
 
 gameTitle_surf = font1.render('Agent J', True, 'White')
 gameTitle_rect = gameTitle_surf.get_rect(midtop=(width/2,30))
@@ -64,8 +75,9 @@ while True:
             if event.type == pygame.KEYDOWN:
                 player_rect.bottom = 350
                 game_active = True
+                start_time = pygame.time.get_ticks()
 
-
+    # Gameplay
     if game_active:
         # Title and Background
         screen.blit(background_surf,(0,0))
@@ -84,7 +96,12 @@ while True:
             game_active = False
         
     else:
-        screen.fill('Pink')
+        semitransparent_surf = pygame.Surface((width, height))
+        semitransparent_surf.fill((0, 0, 0))
+        semitransparent_surf.set_alpha(128)
+
+        screen.blit(background_surf, (0, 0))
+        screen.blit(semitransparent_surf, (0, 0))
 
 
     pygame.display.update()
