@@ -1,6 +1,12 @@
 import pygame
 from sys import exit
 
+def display_time():
+    current_time = pygame.time.get_ticks()
+    time_surf = font2.render(f'{current_time}',False,'White')
+    time_rect = time_surf.get_rect(center = (550,25))
+    screen.blit(time_surf,time_rect)
+
 width = 600
 height = 400
 fps = 60
@@ -9,13 +15,14 @@ pygame.init()
 screen = pygame.display.set_mode((width,height))
 pygame.display.set_caption('Game Name Here')    # Window Name here
 clock = pygame.time.Clock()
-test_font = pygame.font.Font('font/pandabakery.ttf', 50)
+font1 = pygame.font.Font('font/pandabakery.ttf', 50)
+font2 = pygame.font.Font('font/pandabakery.ttf', 20)
 
 game_active = False
 
 background_surf = pygame.image.load('image/background1.jpg').convert()
 
-gameTitle_surf = test_font.render('Robot Assistant', True, 'White')
+gameTitle_surf = font1.render('Agent J', True, 'White')
 gameTitle_rect = gameTitle_surf.get_rect(midtop=(width/2,30))
 
 player_surf = pygame.image.load('image/player.png').convert_alpha()
@@ -63,6 +70,7 @@ while True:
         # Title and Background
         screen.blit(background_surf,(0,0))
         screen.blit(gameTitle_surf,gameTitle_rect)
+        display_time()
 
         # Player
         player_gravity += 0.5
