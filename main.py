@@ -28,7 +28,7 @@ font1 = pygame.font.Font('font/pandabakery.ttf', 50)
 font2 = pygame.font.Font('font/pandabakery.ttf', 20)
 
 start_time = 0
-game_active = False
+game_status = 0
 
 background_surf = pygame.image.load('image/background1.jpg').convert()
 
@@ -50,7 +50,7 @@ while True:
             pygame.quit()
             exit()
         
-        if game_active:
+        if game_status == 1:
             # click to get the Cord of the Cursor
             if event.type == pygame.MOUSEBUTTONDOWN:
                 print(event.pos)
@@ -74,11 +74,11 @@ while True:
         else:
             if event.type == pygame.KEYDOWN:
                 player_rect.bottom = 350
-                game_active = True
+                game_status = 1
                 start_time = pygame.time.get_ticks()
 
     # Gameplay
-    if game_active:
+    if game_status == 1:
         # Title and Background
         screen.blit(background_surf,(0,0))
         screen.blit(gameTitle_surf,gameTitle_rect)
@@ -93,7 +93,7 @@ while True:
         screen.blit(player_surf,player_rect)
 
         if player_rect.top <= 0:
-            game_active = False
+            game_status = 0
         
     else:
         semitransparent_surf = pygame.Surface((width, height))
