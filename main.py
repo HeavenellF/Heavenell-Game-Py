@@ -12,28 +12,28 @@ def display_time():
     # Create the time string in mm:ss format
     time_str = f'{minutes_str}:{seconds_str}'
 
-    time_surf = font2.render(f'{time_str}',False,'White')
-    time_rect = time_surf.get_rect(center = (550,25))
+    time_surf = font2.render(f'{time_str}',False,'Green')
+    time_rect = time_surf.get_rect(center = (width - 70,25))
     screen.blit(time_surf,time_rect)
 
-width = 600
-height = 400
+width = 800
+height = 600
 fps = 60
 
 pygame.init()
 screen = pygame.display.set_mode((width,height))
-pygame.display.set_caption('Game Name Here')    # Window Name here
+pygame.display.set_caption('Agent J')    # Window Name here
 clock = pygame.time.Clock()
 font1 = pygame.font.Font('font/pandabakery.ttf', 50)
 font2 = pygame.font.Font('font/pandabakery.ttf', 20)
 
 start_time = 0
-game_status = 0
+game_state = 0
 
 background_surf = pygame.image.load('image/background1.jpg').convert()
 
 
-gameTitle_surf = font1.render('Agent J', True, 'White')
+gameTitle_surf = font1.render('Agent J', True, 'Black')
 gameTitle_rect = gameTitle_surf.get_rect(midtop=(width/2,30))
 
 player_surf = pygame.image.load('image/player.png').convert_alpha()
@@ -50,13 +50,14 @@ while True:
             pygame.quit()
             exit()
         
-        if game_status == 1:
+        if game_state == 1:
             # click to get the Cord of the Cursor
             if event.type == pygame.MOUSEBUTTONDOWN:
                 print(event.pos)
                 if player_rect.collidepoint(event.pos):
                     player_gravity = -15
             
+            # Keyboard press down
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE and player_rect.bottom >= 350:
                     player_gravity = -15
@@ -65,23 +66,40 @@ while True:
                 if event.key == pygame.K_d:
                     player_direction = 1
 
+                # Pause in-game
+                if event.key == pygame.K_ESCAPE:
+                    game_state = 2
+
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_a and player_direction == -1:
                     player_direction = 0
                 if event.key == pygame.K_d and player_direction == 1:
                     player_direction = 0
+            
 
-        else:
+
+        elif game_state == 2:
             if event.type == pygame.KEYDOWN:
                 player_rect.bottom = 350
-                game_status = 1
+                game_state = 1
+                start_time = pygame.time.get_ticks()
+        
+        elif game_state == 3:
+            if event.type == pygame.KEYDOWN:
+                player_rect.bottom = 350
+                game_state = 1
+                start_time = pygame.time.get_ticks()
+        
+        elif game_state == 0:
+            if event.type == pygame.KEYDOWN:
+                player_rect.bottom = 350
+                game_state = 1
                 start_time = pygame.time.get_ticks()
 
     # Gameplay
-    if game_status == 1:
+    if game_state == 1:
         # Title and Background
         screen.blit(background_surf,(0,0))
-        screen.blit(gameTitle_surf,gameTitle_rect)
         display_time()
 
         # Player
@@ -93,15 +111,33 @@ while True:
         screen.blit(player_surf,player_rect)
 
         if player_rect.top <= 0:
-            game_status = 0
-        
-    else:
+            game_state = 3
+    
+    # Pause
+    elif game_state == 2:
         semitransparent_surf = pygame.Surface((width, height))
         semitransparent_surf.fill((0, 0, 0))
         semitransparent_surf.set_alpha(128)
 
         screen.blit(background_surf, (0, 0))
         screen.blit(semitransparent_surf, (0, 0))
+    
+    # Gameover
+    elif game_state == 3:
+        screen.fill('Red')
+
+    # Main Menu
+    elif game_state == 0:
+        screen.fill('white')
+        screen.blit(gameTitle_surf,gameTitle_rect)
+        # greenbutton_rect = pygame.rect()
+        # pygame.draw.rect(screen, 'Green', greenbutton_rect)
+
+
+        #green_button_rect = pygame.Rect((800 - button_width) // 2, top_margin, button_width, button_height)
+
+    
+
 
 
     pygame.display.update()
