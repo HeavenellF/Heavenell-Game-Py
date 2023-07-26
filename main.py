@@ -2,7 +2,7 @@ import pygame
 from sys import exit
 
 def display_time():
-    current_time = pygame.time.get_ticks() - start_time
+    current_time = pygame.time.get_ticks() - start_time - pause_duration
 
     minutes = current_time // 60000
     seconds = (current_time % 60000) // 1000
@@ -12,8 +12,8 @@ def display_time():
     # Create the time string in mm:ss format
     time_str = f'{minutes_str}:{seconds_str}'
 
-    time_surf = font2.render(f'{time_str}',False,'Green')
-    time_rect = time_surf.get_rect(center = (width - 70,25))
+    time_surf = font2.render(f'{time_str}',False,'Black')
+    time_rect = time_surf.get_rect(center = (width - 700,25))
     screen.blit(time_surf,time_rect)
 
 width = 800
@@ -28,6 +28,7 @@ font1 = pygame.font.Font('font/pandabakery.ttf', 50)
 font2 = pygame.font.Font('font/pandabakery.ttf', 20)
 
 start_time = 0
+pause_duration = 0
 game_state = 0
 
 background_surf = pygame.image.load('image/background1.jpg').convert()
@@ -50,12 +51,13 @@ while True:
             pygame.quit()
             exit()
         
+        # click to get the Cord of the Cursor
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            print(event.pos)
+            if player_rect.collidepoint(event.pos):
+                player_gravity = -15
+        
         if game_state == 1:
-            # click to get the Cord of the Cursor
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                print(event.pos)
-                if player_rect.collidepoint(event.pos):
-                    player_gravity = -15
             
             # Keyboard press down
             if event.type == pygame.KEYDOWN:
@@ -69,6 +71,7 @@ while True:
                 # Pause in-game
                 if event.key == pygame.K_ESCAPE:
                     game_state = 2
+                    pause_start = pygame.time.get_ticks()
 
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_a and player_direction == -1:
@@ -77,24 +80,27 @@ while True:
                     player_direction = 0
             
 
-
+        # pause
         elif game_state == 2:
             if event.type == pygame.KEYDOWN:
                 player_rect.bottom = 350
                 game_state = 1
-                start_time = pygame.time.get_ticks()
+                pause_end = pygame.time.get_ticks()
+                pause_duration = pause_start - pause_end
         
+        # gameover
         elif game_state == 3:
             if event.type == pygame.KEYDOWN:
                 player_rect.bottom = 350
                 game_state = 1
                 start_time = pygame.time.get_ticks()
         
-        elif game_state == 0:
-            if event.type == pygame.KEYDOWN:
-                player_rect.bottom = 350
-                game_state = 1
-                start_time = pygame.time.get_ticks()
+        # Main Menu
+        elif game_state == 0:         
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if greenbutton_rect.collidepoint(event.pos):
+                    game_state = 1
+                    start_time = pygame.time.get_ticks()
 
     # Gameplay
     if game_state == 1:
@@ -130,15 +136,18 @@ while True:
     elif game_state == 0:
         screen.fill('white')
         screen.blit(gameTitle_surf,gameTitle_rect)
-        # greenbutton_rect = pygame.rect()
-        # pygame.draw.rect(screen, 'Green', greenbutton_rect)
+        greenbutton_rect = pygame.Rect((width/2 - 200, height/2 - 100),(400,60))
+        pygame.draw.rect(screen, 'Green', greenbutton_rect)
+        pygame.draw.rect(screen, 'Black', greenbutton_rect, 2)
 
+        bluebutton_rect = pygame.Rect((width/2 - 200, height/2),(400,60))
+        pygame.draw.rect(screen, 'Blue', bluebutton_rect)
+        pygame.draw.rect(screen, 'Black', bluebutton_rect, 2)
 
-        #green_button_rect = pygame.Rect((800 - button_width) // 2, top_margin, button_width, button_height)
-
+        redbutton_rect = pygame.Rect((width/2 - 200, height/2 + 100),(400,60))
+        pygame.draw.rect(screen, 'Red', redbutton_rect)
+        pygame.draw.rect(screen, 'Black', redbutton_rect, 2)
     
-
-
 
     pygame.display.update()
     clock.tick(fps)
