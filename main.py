@@ -1,6 +1,8 @@
 import pygame
 from sys import exit
 
+from mainMenu import mainMenu_elements
+
 def display_time():
     current_time = pygame.time.get_ticks() - start_time - pause_duration
 
@@ -34,7 +36,7 @@ game_state = 0
 
 background_surf = pygame.image.load('image/background1.jpg').convert()
 
-
+button_surf = pygame.image.load('image/misc/ButtonMain.png').convert()
 
 
 player_surf = pygame.image.load('image/player.png').convert_alpha()
@@ -42,24 +44,9 @@ player_rect = player_surf.get_rect(midbottom= (width/2,350))
 player_gravity = 0
 player_direction = 0
 
-#=============================================================
-# Everything in here is for Main Menu
-gameTitle_surf = font1.render('Agent J', True, 'Black')
-gameTitle_rect = gameTitle_surf.get_rect(midtop=(width/2,30))
+mainMenu_elements = mainMenu_elements(width, height, font1, font3, button_surf)
 
-button_surf = pygame.image.load('image/misc/ButtonMain.png').convert()
-button_rectPlay = button_surf.get_rect(midtop= (width/2,height/2-90))
-button_rectSetting = button_surf.get_rect(midtop= (width/2,height/2))
-button_rectExit = button_surf.get_rect(midtop= (width/2,height/2+90))
 
-buttonPlay_surf = font3.render('Play', True, 'Black')
-buttonPlay_rect = buttonPlay_surf.get_rect(midtop=(width/2,height/2-85)) 
-
-buttonSetting_surf = font3.render('Setting', True, 'Black')
-buttonSetting_rect = buttonSetting_surf.get_rect(midtop=(width/2,height/2+5)) 
-
-buttonExit_surf = font3.render('Exit', True, 'Black')
-buttonExit_rect = buttonExit_surf.get_rect(midtop=(width/2,height/2+95)) 
 #pygame.transform.flip(surface_background, True, False)
 
 
@@ -117,11 +104,11 @@ while True:
         elif game_state == 0:         
             if event.type == pygame.MOUSEBUTTONDOWN:
                 # Play
-                if button_rectPlay.collidepoint(event.pos):
+                if mainMenu_elements['button_rectPlay'].collidepoint(event.pos):
                     game_state = 1
                     start_time = pygame.time.get_ticks()
                 # Exit
-                if button_rectExit.collidepoint(event.pos):
+                if mainMenu_elements['button_rectExit'].collidepoint(event.pos):
                     pygame.quit()
                     exit()
 
@@ -160,16 +147,25 @@ while True:
     # Main Menu
     elif game_state == 0:
         screen.fill('white')
-        screen.blit(gameTitle_surf,gameTitle_rect)
+        # screen.blit(gameTitle_surf,gameTitle_rect)
 
-        screen.blit(button_surf,button_rectPlay)
-        screen.blit(buttonPlay_surf,buttonPlay_rect)
+        # screen.blit(button_surf,button_rectPlay)
+        # screen.blit(buttonPlay_surf,buttonPlay_rect)
 
-        screen.blit(button_surf,button_rectSetting)
-        screen.blit(buttonSetting_surf,buttonSetting_rect)
+        # screen.blit(button_surf,button_rectSetting)
+        # screen.blit(buttonSetting_surf,buttonSetting_rect)
 
-        screen.blit(button_surf,button_rectExit)
-        screen.blit(buttonExit_surf,buttonExit_rect)
+        # screen.blit(button_surf,button_rectExit)
+        # screen.blit(buttonExit_surf,buttonExit_rect)
+
+        screen.blit(mainMenu_elements['gameTitle_surf'], mainMenu_elements['gameTitle_rect'])
+        screen.blit(button_surf, mainMenu_elements['button_rectPlay'])
+        screen.blit(mainMenu_elements['buttonPlay_surf'], mainMenu_elements['buttonPlay_rect'])
+        screen.blit(button_surf, mainMenu_elements['button_rectSetting'])
+        screen.blit(mainMenu_elements['buttonSetting_surf'], mainMenu_elements['buttonSetting_rect'])
+        screen.blit(button_surf, mainMenu_elements['button_rectExit'])
+        screen.blit(mainMenu_elements['buttonExit_surf'], mainMenu_elements['buttonExit_rect'])
+
 
     pygame.display.update()
     clock.tick(fps)
