@@ -26,6 +26,7 @@ pygame.display.set_caption('Agent J')    # Window Name here
 clock = pygame.time.Clock()
 font1 = pygame.font.Font('font/pandabakery.ttf', 50)
 font2 = pygame.font.Font('font/pandabakery.ttf', 20)
+font3 = pygame.font.Font('font/pandabakery.ttf', 40)
 
 start_time = 0
 pause_duration = 0
@@ -34,14 +35,31 @@ game_state = 0
 background_surf = pygame.image.load('image/background1.jpg').convert()
 
 
-gameTitle_surf = font1.render('Agent J', True, 'Black')
-gameTitle_rect = gameTitle_surf.get_rect(midtop=(width/2,30))
+
 
 player_surf = pygame.image.load('image/player.png').convert_alpha()
 player_rect = player_surf.get_rect(midbottom= (width/2,350))
 player_gravity = 0
 player_direction = 0
 
+#=============================================================
+# Everything in here is for Main Menu
+gameTitle_surf = font1.render('Agent J', True, 'Black')
+gameTitle_rect = gameTitle_surf.get_rect(midtop=(width/2,30))
+
+button_surf = pygame.image.load('image/misc/ButtonMain.png').convert()
+button_rectPlay = button_surf.get_rect(midtop= (width/2,height/2-90))
+button_rectSetting = button_surf.get_rect(midtop= (width/2,height/2))
+button_rectExit = button_surf.get_rect(midtop= (width/2,height/2+90))
+
+buttonPlay_surf = font3.render('Play', True, 'Black')
+buttonPlay_rect = buttonPlay_surf.get_rect(midtop=(width/2,height/2-85)) 
+
+buttonSetting_surf = font3.render('Setting', True, 'Black')
+buttonSetting_rect = buttonSetting_surf.get_rect(midtop=(width/2,height/2+5)) 
+
+buttonExit_surf = font3.render('Exit', True, 'Black')
+buttonExit_rect = buttonExit_surf.get_rect(midtop=(width/2,height/2+95)) 
 #pygame.transform.flip(surface_background, True, False)
 
 
@@ -58,7 +76,7 @@ while True:
                 player_gravity = -15
         
         if game_state == 1:
-            
+
             # Keyboard press down
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE and player_rect.bottom >= 350:
@@ -98,9 +116,16 @@ while True:
         # Main Menu
         elif game_state == 0:         
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if greenbutton_rect.collidepoint(event.pos):
+                # Play
+                if button_rectPlay.collidepoint(event.pos):
                     game_state = 1
                     start_time = pygame.time.get_ticks()
+                # Exit
+                if button_rectExit.collidepoint(event.pos):
+                    pygame.quit()
+                    exit()
+
+                    
 
     # Gameplay
     if game_state == 1:
@@ -136,18 +161,15 @@ while True:
     elif game_state == 0:
         screen.fill('white')
         screen.blit(gameTitle_surf,gameTitle_rect)
-        greenbutton_rect = pygame.Rect((width/2 - 200, height/2 - 100),(400,60))
-        pygame.draw.rect(screen, 'Green', greenbutton_rect)
-        pygame.draw.rect(screen, 'Black', greenbutton_rect, 2)
 
-        bluebutton_rect = pygame.Rect((width/2 - 200, height/2),(400,60))
-        pygame.draw.rect(screen, 'Blue', bluebutton_rect)
-        pygame.draw.rect(screen, 'Black', bluebutton_rect, 2)
+        screen.blit(button_surf,button_rectPlay)
+        screen.blit(buttonPlay_surf,buttonPlay_rect)
 
-        redbutton_rect = pygame.Rect((width/2 - 200, height/2 + 100),(400,60))
-        pygame.draw.rect(screen, 'Red', redbutton_rect)
-        pygame.draw.rect(screen, 'Black', redbutton_rect, 2)
-    
+        screen.blit(button_surf,button_rectSetting)
+        screen.blit(buttonSetting_surf,buttonSetting_rect)
+
+        screen.blit(button_surf,button_rectExit)
+        screen.blit(buttonExit_surf,buttonExit_rect)
 
     pygame.display.update()
     clock.tick(fps)
