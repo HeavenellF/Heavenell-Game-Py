@@ -5,7 +5,6 @@ from mainMenu import mainMenu_elements
 
 def display_time():
     current_time = pygame.time.get_ticks() - start_time - pause_duration
-
     minutes = current_time // 60000
     seconds = (current_time % 60000) // 1000
     # Convert to strings and add leading zeros if necessary
@@ -26,12 +25,14 @@ pygame.init()
 screen = pygame.display.set_mode((width,height))
 pygame.display.set_caption('Agent J')    # Window Name here
 clock = pygame.time.Clock()
-font1 = pygame.font.Font('font/pandabakery.ttf', 50)
+font1 = pygame.font.Font('font/pandabakery.ttf', 65)
 font2 = pygame.font.Font('font/pandabakery.ttf', 20)
 font3 = pygame.font.Font('font/pandabakery.ttf', 40)
 
 start_time = 0
 pause_duration = 0
+pause_start = 0
+pause_end = 0
 game_state = 0
 
 background_surf = pygame.image.load('image/background1.jpg').convert()
@@ -91,7 +92,7 @@ while True:
                 player_rect.bottom = 350
                 game_state = 1
                 pause_end = pygame.time.get_ticks()
-                pause_duration = pause_start - pause_end
+                pause_duration += pause_end - pause_start
         
         # gameover
         elif game_state == 3:
@@ -147,16 +148,6 @@ while True:
     # Main Menu
     elif game_state == 0:
         screen.fill('white')
-        # screen.blit(gameTitle_surf,gameTitle_rect)
-
-        # screen.blit(button_surf,button_rectPlay)
-        # screen.blit(buttonPlay_surf,buttonPlay_rect)
-
-        # screen.blit(button_surf,button_rectSetting)
-        # screen.blit(buttonSetting_surf,buttonSetting_rect)
-
-        # screen.blit(button_surf,button_rectExit)
-        # screen.blit(buttonExit_surf,buttonExit_rect)
 
         screen.blit(mainMenu_elements['gameTitle_surf'], mainMenu_elements['gameTitle_rect'])
         screen.blit(button_surf, mainMenu_elements['button_rectPlay'])
