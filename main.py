@@ -44,6 +44,8 @@ pause_end = 0
 game_state = 0
 glint_button = None
 finish = False
+charging = False
+jumpCharge = 0
 
 background_surf = pygame.image.load('image/background1.jpg').convert()
 
@@ -75,11 +77,11 @@ while True:
                 player_gravity = -15
         
         if game_state == 1:
-
             # Keyboard press down
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE and player_rect.bottom >= 350:
-                    player_gravity = -15
+                if event.key == pygame.K_SPACE:
+                    jumpCharge += 0.2
+                    #player_gravity = -15
                 if event.key == pygame.K_a:
                     player_direction = -1
                 if event.key == pygame.K_d:
@@ -95,8 +97,11 @@ while True:
                     player_direction = 0
                 if event.key == pygame.K_d and player_direction == 1:
                     player_direction = 0
-            
-
+                if event.key == pygame.K_SPACE:
+                    player_gravity = -1.7 * jumpCharge
+                    # print(jumpCharge)
+                    # print(player_gravity)
+                    jumpCharge = 0
         # pause
         elif game_state == 2:
             if event.type == pygame.KEYDOWN:
@@ -157,13 +162,15 @@ while True:
     # Gameplay
     if game_state == 1:
         # Title and Background
-        screen.blit(background_surf,(0,0))
+        screen.fill('white')
         display_time(finish)
 
         # Player
+        if jumpCharge !=0 and jumpCharge <= 10:
+            jumpCharge += 0.2
         player_gravity += 0.5
         player_rect.y += player_gravity
-        player_rect.x += player_direction*2
+        player_rect.x += player_direction*3
         if player_rect.bottom >= 350:
             player_rect.bottom = 350
         screen.blit(player_surf,player_rect)
