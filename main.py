@@ -14,7 +14,7 @@ def display_time(finish):
     time_str = f'{minutes_str}:{seconds_str}'
 
     time_surf = font2.render(f'{time_str}',False,'Black')
-    time_rect = time_surf.get_rect(center = (width - 700,25))
+    time_rect = time_surf.get_rect(center = (50,25))
     screen.blit(time_surf,time_rect)
 
     if finish:
@@ -44,8 +44,7 @@ pause_end = 0
 game_state = 0
 glint_button = None
 finish = False
-charging = False
-jumpCharge = 0
+
 
 background_surf = pygame.image.load('image/background1.jpg').convert()
 
@@ -57,6 +56,9 @@ player_surf = pygame.image.load('image/player.png').convert_alpha()
 player_rect = player_surf.get_rect(midbottom= (width/2,350))
 player_gravity = 0
 player_direction = 0
+jumpCharge = 0
+midAir = False
+midStrafe = False
 
 mainMenu_elements = mainMenu_elements(width, height, font1, font3, button_surf1)
 gameOver_elements = gameOver_elements(width, height, font1, font3, button_surf1)
@@ -79,13 +81,17 @@ while True:
         if game_state == 1:
             # Keyboard press down
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
+                if event.key == pygame.K_SPACE and not midAir:
                     jumpCharge += 0.2
-                    #player_gravity = -15
-                if event.key == pygame.K_a:
+                    midStrafe = False
+                if event.key == pygame.K_a and not midAir:
                     player_direction = -1
-                if event.key == pygame.K_d:
+                    if jumpCharge == 0:
+                        midStrafe = True
+                if event.key == pygame.K_d and not midAir:
                     player_direction = 1
+                    if jumpCharge == 0:
+                        midStrafe = True
 
                 # Pause in-game
                 if event.key == pygame.K_ESCAPE:
@@ -93,15 +99,14 @@ while True:
                     pause_start = pygame.time.get_ticks()
 
             if event.type == pygame.KEYUP:
-                if event.key == pygame.K_a and player_direction == -1:
-                    player_direction = 0
-                if event.key == pygame.K_d and player_direction == 1:
-                    player_direction = 0
-                if event.key == pygame.K_SPACE:
-                    player_gravity = -1.7 * jumpCharge
-                    # print(jumpCharge)
-                    # print(player_gravity)
+                if event.key == pygame.K_a and midStrafe:
+                    midStrafe = False
+                if event.key == pygame.K_d and midStrafe:
+                    midStrafe = False
+                if event.key == pygame.K_SPACE and not midAir:
+                    player_gravity = -1.3 * jumpCharge
                     jumpCharge = 0
+                    midAir = True
         # pause
         elif game_state == 2:
             if event.type == pygame.KEYDOWN:
@@ -168,10 +173,29 @@ while True:
         # Player
         if jumpCharge !=0 and jumpCharge <= 10:
             jumpCharge += 0.2
-        player_gravity += 0.5
+        player_gravity += 0.4
+
+        # Jumping 
         player_rect.y += player_gravity
-        player_rect.x += player_direction*3
+        if midAir:
+            player_rect.x += player_direction*6
+
+        # Move the Character
+        if midStrafe:
+            player_rect.x += player_direction*3
+
+        # Stop when touching a Border
+        if player_rect.right >= width:
+            midStrafe = False
+            player_rect.right = width
+            if midAir: player_direction *= -1
+        if player_rect.left <= 0:
+            player_rect.left = 0
+            midStrafe = False
+            if midAir: player_direction *= -1
+        # Stop when touching a Ground
         if player_rect.bottom >= 350:
+            midAir = False
             player_rect.bottom = 350
         screen.blit(player_surf,player_rect)
 
