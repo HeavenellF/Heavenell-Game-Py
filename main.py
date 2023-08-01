@@ -53,9 +53,9 @@ button_surf1 = pygame.image.load('image/misc/ButtonMain.png').convert()
 
 
 player_surf = pygame.image.load('image/player.png').convert_alpha()
-player_rect = player_surf.get_rect(midbottom= (width/2,350))
+player_rect = player_surf.get_rect(midbottom= (width/2,500))
 player_gravity = 0
-player_direction = 0
+player_direction = 1
 jumpCharge = 0
 midAir = False
 midStrafe = False
@@ -194,13 +194,13 @@ while True:
             midStrafe = False
             if midAir: player_direction *= -1
         # Stop when touching a Ground
-        if player_rect.bottom >= 350:
+        if player_rect.bottom >= 500:
             midAir = False
-            player_rect.bottom = 350
+            player_rect.bottom = 500
         screen.blit(player_surf,player_rect)
 
         if player_rect.top <= 0:
-            player_rect.bottom = 350
+            player_rect.bottom = 500
             timefinish_surf,timefinish_rect = display_time(finish=True)
             game_state = 3
     
