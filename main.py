@@ -2,6 +2,7 @@ import pygame
 from sys import exit
 
 from Button import mainMenu_elements, gameOver_elements
+import levelsobject
 
 def display_time(finish):
     current_time = pygame.time.get_ticks() - start_time - pause_duration
@@ -44,12 +45,11 @@ pause_end = 0
 game_state = 0
 glint_button = None
 finish = False
-
+level = 0
 
 background_surf = pygame.image.load('image/background1.jpg').convert()
 
 button_surf1 = pygame.image.load('image/misc/ButtonMain.png').convert()
-
 
 
 player_surf = pygame.image.load('image/player.png').convert_alpha()
@@ -62,6 +62,8 @@ midStrafe = False
 
 mainMenu_elements = mainMenu_elements(width, height, font1, font3, button_surf1)
 gameOver_elements = gameOver_elements(width, height, font1, font3, button_surf1)
+
+levels_object = [levelsobject.level1_object(width,height), levelsobject.level2_object(width,height)]
 
 #pygame.transform.flip(surface_background, True, False)
 
@@ -146,6 +148,7 @@ while True:
                 # Play
                 if mainMenu_elements['button_rectPlay'].collidepoint(event.pos):
                     game_state = 1
+                    level = 1
                     start_time = pygame.time.get_ticks()
                 # Exit
                 if mainMenu_elements['button_rectExit'].collidepoint(event.pos):
@@ -170,12 +173,15 @@ while True:
         screen.fill('white')
         display_time(finish)
 
-        # Player
+        for platform_surf, platform_rect in levels_object[level-1]:
+            screen.blit(platform_surf, platform_rect)
+
+                
+
+        # Jumping 
         if jumpCharge !=0 and jumpCharge <= 10:
             jumpCharge += 0.2
         player_gravity += 0.4
-
-        # Jumping 
         player_rect.y += player_gravity
         if midAir:
             player_rect.x += player_direction*6
@@ -197,6 +203,11 @@ while True:
         if player_rect.bottom >= 500:
             midAir = False
             player_rect.bottom = 500
+
+        for platform_surf, platform_rect in levels_object[level-1]:
+            if player_rect.colliderect(platform_rect):
+                print('here')
+                
         screen.blit(player_surf,player_rect)
 
         if player_rect.top <= 0:
