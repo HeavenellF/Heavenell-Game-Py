@@ -2,6 +2,7 @@ import pygame
 from sys import exit
 
 from Button import mainMenu_elements, gameOver_elements
+from collision import get_collision_side
 import levelsobject
 
 def display_time(finish):
@@ -25,6 +26,13 @@ def display_time(finish):
         timefinish_rect = timefinish_surf.get_rect(center=(width / 2, 150))
 
         return timefinish_surf, timefinish_rect
+
+def start_game():
+    global game_state, level, start_time, pause_duration
+    game_state = 1
+    level = 1
+    start_time = pygame.time.get_ticks()
+    pause_duration = 0
 
 width = 800
 height = 600
@@ -64,9 +72,6 @@ mainMenu_elements = mainMenu_elements(width, height, font1, font3, button_surf1)
 gameOver_elements = gameOver_elements(width, height, font1, font3, button_surf1)
 
 levels_object = [levelsobject.level1_object(width,height), levelsobject.level2_object(width,height)]
-
-#pygame.transform.flip(surface_background, True, False)
-
 
 while True:
     for event in pygame.event.get():
@@ -112,7 +117,6 @@ while True:
         # pause
         elif game_state == 2:
             if event.type == pygame.KEYDOWN:
-                player_rect.bottom = 350
                 game_state = 1
                 pause_end = pygame.time.get_ticks()
                 pause_duration += pause_end - pause_start
@@ -122,8 +126,7 @@ while True:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 # Play Again
                 if gameOver_elements['button_rectPlayAgain'].collidepoint(event.pos):
-                    game_state = 1
-                    start_time = pygame.time.get_ticks()
+                    start_game()
                 # Main Menu
                 if gameOver_elements['button_rectMainMenu'].collidepoint(event.pos):
                     game_state = 0
@@ -147,9 +150,7 @@ while True:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 # Play
                 if mainMenu_elements['button_rectPlay'].collidepoint(event.pos):
-                    game_state = 1
-                    level = 1
-                    start_time = pygame.time.get_ticks()
+                    start_game()
                 # Exit
                 if mainMenu_elements['button_rectExit'].collidepoint(event.pos):
                     pygame.quit()
@@ -176,8 +177,6 @@ while True:
         for platform_surf, platform_rect in levels_object[level-1]:
             screen.blit(platform_surf, platform_rect)
 
-                
-
         # Jumping 
         if jumpCharge !=0 and jumpCharge <= 10:
             jumpCharge += 0.2
@@ -185,11 +184,9 @@ while True:
         player_rect.y += player_gravity
         if midAir:
             player_rect.x += player_direction*6
-
         # Move the Character
         if midStrafe:
             player_rect.x += player_direction*3
-
         # Stop when touching a Border
         if player_rect.right >= width:
             midStrafe = False
@@ -206,23 +203,34 @@ while True:
 
         for platform_surf, platform_rect in levels_object[level-1]:
             if player_rect.colliderect(platform_rect):
-                print('here')
+                side = get_collision_side(player_rect, platform_rect)
+                print(side)
+                if side == 'top':
+                    player_rect.top = platform_rect.bottom
+                    player_gravity = 0
+                elif side == 'bottom':
+                    player_gravity = 0
+                    player_rect.bottom = platform_rect.top
+                    midAir = False
+                elif side == 'right':
+                    if midAir: player_direction *= -1
+                elif side == 'left':
+                    if midAir: player_direction *= -1
                 
         screen.blit(player_surf,player_rect)
 
         if player_rect.top <= 0:
-            player_rect.bottom = 500
-            timefinish_surf,timefinish_rect = display_time(finish=True)
-            game_state = 3
+            if level == 2:
+                player_rect.bottom = 500
+                timefinish_surf,timefinish_rect = display_time(finish=True)
+                game_state = 3
+            else:
+                player_rect.top += height
+                level += 1
     
     # Pause
     elif game_state == 2:
-        semitransparent_surf = pygame.Surface((width, height))
-        semitransparent_surf.fill((0, 0, 0))
-        semitransparent_surf.set_alpha(128)
-
-        screen.blit(background_surf, (0, 0))
-        screen.blit(semitransparent_surf, (0, 0))
+        screen.fill('white')
     
     # Gameover
     elif game_state == 3:
