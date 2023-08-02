@@ -197,7 +197,7 @@ while True:
             midStrafe = False
             if midAir: player_direction *= -1
         # Stop when touching a Ground
-        if player_rect.bottom >= 500:
+        if player_rect.bottom >= 500 and level == 1:
             midAir = False
             player_rect.bottom = 500
 
@@ -213,11 +213,12 @@ while True:
                     player_rect.bottom = platform_rect.top
                     midAir = False
                 elif side == 'right':
-                    if midAir: player_direction *= -1
+                    if not midStrafe: player_direction *= -1
+                    else : player_rect.right = platform_rect.left
                 elif side == 'left':
-                    if midAir: player_direction *= -1
+                    if not midStrafe: player_direction *= -1
+                    else : player_rect.left = platform_rect.right
                 
-        screen.blit(player_surf,player_rect)
 
         if player_rect.top <= 0:
             if level == 2:
@@ -227,6 +228,11 @@ while True:
             else:
                 player_rect.top += height
                 level += 1
+        elif player_rect.top >= height:
+            player_rect.top -= height
+            level -= 1
+        
+        screen.blit(player_surf,player_rect)
     
     # Pause
     elif game_state == 2:
