@@ -3,7 +3,7 @@ def level1_object(width, height):
     level1_object = []
     
     platform1_surf = pygame.image.load('image/misc/ButtonMain.png').convert()
-    platform_1_rect = platform1_surf.get_rect(topleft=(width/2-200, height-60))
+    platform_1_rect = platform1_surf.get_rect(topleft=(width/2-200, height-120))
     level1_object.append((platform1_surf, platform_1_rect))
 
     platform2_surf = pygame.image.load('image/misc/ButtonMain.png').convert()

@@ -196,10 +196,6 @@ while True:
             player_rect.left = 0
             midStrafe = False
             if midAir: player_direction *= -1
-        # Stop when touching a Ground
-        if player_rect.bottom >= 500 and level == 1:
-            midAir = False
-            player_rect.bottom = 500
 
         for platform_surf, platform_rect in levels_object[level-1]:
             if player_rect.colliderect(platform_rect):
@@ -207,7 +203,7 @@ while True:
                 print(side)
                 if side == 'top':
                     player_rect.top = platform_rect.bottom
-                    player_gravity = 0
+                    if midAir: player_gravity = 0
                 elif side == 'bottom':
                     player_gravity = 0
                     player_rect.bottom = platform_rect.top
