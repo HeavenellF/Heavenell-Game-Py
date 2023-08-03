@@ -28,11 +28,13 @@ def display_time(finish):
         return timefinish_surf, timefinish_rect
 
 def start_game():
-    global game_state, level, start_time, pause_duration
+    global game_state, level, start_time, pause_duration, midAir, midStrafe
     game_state = 1
     level = 1
     start_time = pygame.time.get_ticks()
     pause_duration = 0
+    midAir = False
+    midStrafe = False
 
 width = 800
 height = 600
