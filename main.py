@@ -57,7 +57,9 @@ glint_button = None
 finish = False
 level = 0
 
-background_surf = pygame.image.load('image/background1.jpg').convert()
+
+background_mainmenu_surf = pygame.image.load('image/mainmenuBackground.png').convert()
+background_gameover_surf = pygame.image.load('image/gameoverBackground.png').convert()
 
 button_surf1 = pygame.image.load('image/misc/ButtonMain.png').convert()
 
@@ -238,7 +240,7 @@ while True:
     
     # Gameover
     elif game_state == 3:
-        screen.fill('white')
+        screen.blit(background_gameover_surf,(0,0))
         screen.blit(gameOver_elements['gameOver_surf'], gameOver_elements['gameOver_rect'])
         screen.blit(timefinish_surf, timefinish_rect)
 
@@ -254,7 +256,7 @@ while True:
 
     # Main Menu
     elif game_state == 0:
-        screen.fill('white')
+        screen.blit(background_mainmenu_surf,(0,0))
         screen.blit(mainMenu_elements['gameTitle_surf'], mainMenu_elements['gameTitle_rect'])
 
         screen.blit(button_surf1, mainMenu_elements['button_rectPlay'])
