@@ -61,6 +61,9 @@ level = 0
 background_mainmenu_surf = pygame.image.load('image/mainmenuBackground.png').convert()
 background_gameover_surf = pygame.image.load('image/gameoverBackground.png').convert()
 
+pause_surf = font3.render('Pause', True, 'Black')
+pause_rect = pause_surf.get_rect(midbottom=(width / 2, height / 2))
+
 button_surf1 = pygame.image.load('image/misc/ButtonMain.png').convert()
 
 
@@ -236,7 +239,10 @@ while True:
     
     # Pause
     elif game_state == 2:
-        screen.fill('white')
+        for platform_surf, platform_rect in levels_object[level-1]:
+            screen.blit(platform_surf, platform_rect)
+        screen.blit(player_surf,player_rect)
+        screen.blit(pause_surf,pause_rect)
     
     # Gameover
     elif game_state == 3:
