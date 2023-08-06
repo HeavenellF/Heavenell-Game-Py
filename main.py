@@ -207,7 +207,6 @@ while True:
         for platform_surf, platform_rect in levels_object[level-1]:
             if player_rect.colliderect(platform_rect):
                 side = get_collision_side(player_rect, platform_rect)
-                print(side)
                 if side == 'top':
                     player_rect.top = platform_rect.bottom
                     if midAir: player_gravity = 0
