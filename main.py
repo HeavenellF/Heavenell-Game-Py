@@ -43,9 +43,13 @@ def player_animation():
     if midStrafe:
         player_index = 1
         player_surf = player_state[player_index]
+    elif jumpCharge != 0:
+        player_index = 2
+        player_surf = player_state[player_index]
     else:
         player_index = 0
         player_surf = player_state[player_index]
+    
     
     if player_direction == 1:
         player_surf = pygame.transform.flip(player_surf, True, False)
@@ -85,7 +89,8 @@ button_surf1 = pygame.image.load('image/misc/ButtonMain.png').convert()
 
 player_stand = pygame.image.load('image/player/playerstand.png').convert_alpha()
 player_walk_1 = pygame.image.load('image/player/playerwalk1.png').convert_alpha()
-player_state = [player_stand, player_walk_1]
+player_charge = pygame.image.load('image/player/playercharge.png').convert_alpha()
+player_state = [player_stand, player_walk_1, player_charge]
 player_index = 0
 
 player_surf = player_state[player_index]
@@ -240,7 +245,7 @@ while True:
                     if midAir: player_gravity = 0
                 elif side == 'bottom':
                     player_gravity = 0
-                    player_rect.bottom = platform_rect.top
+                    player_rect.bottom = platform_rect.top + 2
                     midAir = False
                 elif side == 'right':
                     if not midStrafe: player_direction *= -1
