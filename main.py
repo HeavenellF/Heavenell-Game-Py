@@ -36,6 +36,17 @@ def start_game():
     midAir = False
     midStrafe = False
 
+def player_animation():
+    global player_surf, player_index
+    # walking animation
+    if midStrafe:
+        player_index = 1
+        player_surf = player_state[player_index]
+    else:
+        player_index = 0
+        player_surf = player_state[player_index]
+
+
 width = 800
 height = 600
 fps = 60
@@ -66,8 +77,12 @@ pause_rect = pause_surf.get_rect(midbottom=(width / 2, height / 2))
 
 button_surf1 = pygame.image.load('image/misc/ButtonMain.png').convert()
 
+player_stand = pygame.image.load('image/player/player.png').convert_alpha()
+player_walk_1 = pygame.image.load('image/player/playerwalk1.png').convert_alpha()
+player_state = [player_stand, player_walk_1]
+player_index = 0
 
-player_surf = pygame.image.load('image/player/player.png').convert_alpha()
+player_surf = player_state[player_index]
 player_rect = player_surf.get_rect(midbottom= (width/2,500))
 player_gravity = 0
 player_direction = 1
@@ -233,7 +248,7 @@ while True:
         elif player_rect.top >= height:
             player_rect.top -= height
             level -= 1
-        
+        player_animation()
         screen.blit(player_surf,player_rect)
     
     # Pause
