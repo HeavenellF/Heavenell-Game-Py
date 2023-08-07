@@ -67,7 +67,7 @@ pause_rect = pause_surf.get_rect(midbottom=(width / 2, height / 2))
 button_surf1 = pygame.image.load('image/misc/ButtonMain.png').convert()
 
 
-player_surf = pygame.image.load('image/player.png').convert_alpha()
+player_surf = pygame.image.load('image/player/player.png').convert_alpha()
 player_rect = player_surf.get_rect(midbottom= (width/2,500))
 player_gravity = 0
 player_direction = 1
