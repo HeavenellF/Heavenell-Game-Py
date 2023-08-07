@@ -16,25 +16,26 @@ def display_time(finish):
     time_str = f'{minutes_str}:{seconds_str}'
 
     time_surf = font2.render(f'{time_str}',False,'Black')
-    time_rect = time_surf.get_rect(center = (50,25))
+    time_rect = time_surf.get_rect(center = (100,25))
     screen.blit(time_surf,time_rect)
 
     if finish:
         # Create the time finish string
         timefinish_str = f'Your Time: {minutes_str}:{seconds_str}'
         timefinish_surf = font3.render(timefinish_str, True, 'Black')
-        timefinish_rect = timefinish_surf.get_rect(center=(width / 2, 150))
+        timefinish_rect = timefinish_surf.get_rect(center=(width / 2, 225))
 
         return timefinish_surf, timefinish_rect
 
 def start_game():
-    global game_state, level, start_time, pause_duration, midAir, midStrafe
+    global game_state, level, start_time, pause_duration, midAir, midStrafe, player_rect
     game_state = 1
     level = 1
     start_time = pygame.time.get_ticks()
     pause_duration = 0
     midAir = False
     midStrafe = False
+    player_rect = player_surf.get_rect(midbottom= (width/2,820))
 
 def player_animation():
     global player_surf, player_index
@@ -45,19 +46,24 @@ def player_animation():
     else:
         player_index = 0
         player_surf = player_state[player_index]
+    
+    if player_direction == 1:
+        player_surf = pygame.transform.flip(player_surf, True, False)
+
+    
 
 
-width = 800
-height = 600
+width = 1200
+height = 900
 fps = 60
 
 pygame.init()
 screen = pygame.display.set_mode((width,height))
 pygame.display.set_caption('Agent J')    # Window Name here
 clock = pygame.time.Clock()
-font1 = pygame.font.Font('font/pandabakery.ttf', 65)
-font2 = pygame.font.Font('font/pandabakery.ttf', 20)
-font3 = pygame.font.Font('font/pandabakery.ttf', 40)
+font1 = pygame.font.Font('font/pandabakery.ttf', 97)
+font2 = pygame.font.Font('font/pandabakery.ttf', 30)
+font3 = pygame.font.Font('font/pandabakery.ttf', 60)
 
 start_time = 0
 pause_duration = 0
@@ -77,13 +83,13 @@ pause_rect = pause_surf.get_rect(midbottom=(width / 2, height / 2))
 
 button_surf1 = pygame.image.load('image/misc/ButtonMain.png').convert()
 
-player_stand = pygame.image.load('image/player/player.png').convert_alpha()
+player_stand = pygame.image.load('image/player/playerstand.png').convert_alpha()
 player_walk_1 = pygame.image.load('image/player/playerwalk1.png').convert_alpha()
 player_state = [player_stand, player_walk_1]
 player_index = 0
 
 player_surf = player_state[player_index]
-player_rect = player_surf.get_rect(midbottom= (width/2,500))
+player_rect = player_surf.get_rect()
 player_gravity = 0
 player_direction = 1
 jumpCharge = 0
@@ -93,7 +99,9 @@ midStrafe = False
 mainMenu_elements = mainMenu_elements(width, height, font1, font3, button_surf1)
 gameOver_elements = gameOver_elements(width, height, font1, font3, button_surf1)
 
-levels_object = [levelsobject.level1_object(width,height), levelsobject.level2_object(width,height)]
+levels_object = [levelsobject.level1_object(width,height), 
+                 levelsobject.level2_object(width,height), 
+                 levelsobject.level3_object(width,height)]
 
 while True:
     for event in pygame.event.get():
@@ -111,7 +119,7 @@ while True:
             # Keyboard press down
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE and not midAir:
-                    jumpCharge += 0.2
+                    jumpCharge += 0.3
                     midStrafe = False
                 if event.key == pygame.K_a and not midAir:
                     player_direction = -1
@@ -126,6 +134,12 @@ while True:
                 if event.key == pygame.K_ESCAPE:
                     game_state = 2
                     pause_start = pygame.time.get_ticks()
+                if event.key == pygame.K_n:
+                    level += 1
+                    player_rect.y = 800
+                if event.key == pygame.K_m:
+                    level -= 1
+                    player_rect.y = 800
 
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_a and midStrafe:
@@ -194,21 +208,20 @@ while True:
     if game_state == 1:
         # Title and Background
         screen.fill('white')
-        display_time(finish)
 
         for platform_surf, platform_rect in levels_object[level-1]:
             screen.blit(platform_surf, platform_rect)
 
         # Jumping 
-        if jumpCharge !=0 and jumpCharge <= 10:
-            jumpCharge += 0.2
-        player_gravity += 0.4
+        if jumpCharge !=0 and jumpCharge <= 15:
+            jumpCharge += 0.3
+        player_gravity += 0.6
         player_rect.y += player_gravity
         if midAir:
-            player_rect.x += player_direction*6
+            player_rect.x += player_direction*10
         # Move the Character
         if midStrafe:
-            player_rect.x += player_direction*3
+            player_rect.x += player_direction*5
         # Stop when touching a Border
         if player_rect.right >= width:
             midStrafe = False
@@ -238,8 +251,8 @@ while True:
                 
 
         if player_rect.top <= 0:
-            if level == 2:
-                player_rect.bottom = 500
+            if level == 3:
+                player_rect.bottom = 800
                 timefinish_surf,timefinish_rect = display_time(finish=True)
                 game_state = 3
             else:
@@ -250,6 +263,7 @@ while True:
             level -= 1
         player_animation()
         screen.blit(player_surf,player_rect)
+        display_time(finish)
     
     # Pause
     elif game_state == 2:
