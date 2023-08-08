@@ -311,8 +311,8 @@ while True:
     
     # Pause
     elif game_state == 2:
-        for platform_surf, platform_rect in levels_object[level-1]:
-            screen.blit(platform_surf, platform_rect)
+        for surf, rect, _ in levels_object[level-1]:
+            screen.blit(surf, rect)
         screen.blit(player_surf,player_rect)
         screen.blit(pause_surf,pause_rect)
     
