@@ -47,13 +47,18 @@ def player_animation():
     elif jumpCharge != 0:
         player_index = 2
         player_surf = player_state[player_index]
+    elif player_gravity < 0 :
+        player_index = 3
+        player_surf = player_state[player_index]
     else:
         player_index = 0
         player_surf = player_state[player_index]
-    
+
     
     if player_direction == 1:
         player_surf = pygame.transform.flip(player_surf, True, False)
+
+    
 
 def play_sound(type):
     if type == 'wall':
@@ -114,7 +119,8 @@ button_surf1 = pygame.image.load('image/misc/ButtonMain.png').convert()
 player_stand = pygame.image.load('image/player/playerstand.png').convert_alpha()
 player_walk_1 = pygame.image.load('image/player/playerwalk1.png').convert_alpha()
 player_charge = pygame.image.load('image/player/playercharge.png').convert_alpha()
-player_state = [player_stand, player_walk_1, player_charge]
+player_jump = pygame.image.load('image/player/playerjump.png').convert_alpha()
+player_state = [player_stand, player_walk_1, player_charge, player_jump]
 player_index = 0
 
 player_surf = player_state[player_index]
