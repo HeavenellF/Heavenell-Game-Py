@@ -293,15 +293,13 @@ while True:
                             play_sound('wall')
                         else : player_rect.left = platform_rect.right
                 
-
         if player_rect.top <= 0:
-            if level == 3:
+            player_rect.top += height
+            level += 1
+            if level == len(levels_object) + 1:
                 player_rect.bottom = 800
                 timefinish_surf,timefinish_rect = display_time(finish=True)
                 game_state = 3
-            else:
-                player_rect.top += height
-                level += 1
         elif player_rect.top >= height:
             player_rect.top -= height
             level -= 1
