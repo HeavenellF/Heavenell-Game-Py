@@ -1,4 +1,5 @@
 import pygame
+import random
 from sys import exit
 
 from Button import mainMenu_elements, gameOver_elements
@@ -54,7 +55,15 @@ def player_animation():
     if player_direction == 1:
         player_surf = pygame.transform.flip(player_surf, True, False)
 
-    
+def play_sound(type):
+    if type == 'wall':
+        random_number = random.randint(1, 3)
+        if random_number == 1 : wallbounce1_sound.play()
+        elif random_number == 2 : wallbounce2_sound.play()
+        elif random_number == 3 : wallbounce3_sound.play()
+    elif type == 'jump':
+        jump_sound.play()
+
 
 
 width = 1200
@@ -81,6 +90,21 @@ level = 0
 
 background_mainmenu_surf = pygame.image.load('image/mainmenuBackground.png').convert()
 background_gameover_surf = pygame.image.load('image/gameoverBackground.png').convert()
+
+#====================================== mp3 ==============================#
+bgm_sound = pygame.mixer.Sound('sound/bgm.mp3')
+bgm_sound.set_volume(0.2)
+bgm_sound.play(-1)
+wallbounce1_sound = pygame.mixer.Sound('sound/wallhit1.mp3')
+wallbounce1_sound.set_volume(0.4)
+wallbounce2_sound = pygame.mixer.Sound('sound/wallhit2.mp3')
+wallbounce2_sound.set_volume(0.4)
+wallbounce3_sound = pygame.mixer.Sound('sound/wallhit3.mp3')
+wallbounce3_sound.set_volume(0.4)
+jump_sound = pygame.mixer.Sound('sound/jump.mp3')
+jump_sound.set_volume(0.6)
+#====================================== mp3 ==============================#
+
 
 pause_surf = font3.render('Pause', True, 'Black')
 pause_rect = pause_surf.get_rect(midbottom=(width / 2, height / 2))
@@ -116,7 +140,6 @@ while True:
         
         # click to get the Cord of the Cursor
         if event.type == pygame.MOUSEBUTTONDOWN:
-            print(event.pos)
             if player_rect.collidepoint(event.pos):
                 player_gravity = -15
         
@@ -155,6 +178,7 @@ while True:
                     player_gravity = -1.3 * jumpCharge
                     jumpCharge = 0
                     midAir = True
+                    play_sound('jump')
         # pause
         elif game_state == 2:
             if event.type == pygame.KEYDOWN:
@@ -231,27 +255,37 @@ while True:
         if player_rect.right >= width:
             midStrafe = False
             player_rect.right = width
-            if midAir: player_direction *= -1
+            if midAir: 
+                player_direction *= -1
+                play_sound('wall')
         if player_rect.left <= 0:
             player_rect.left = 0
             midStrafe = False
-            if midAir: player_direction *= -1
+            if midAir: 
+                player_direction *= -1
+                play_sound('wall')
 
         for platform_surf, platform_rect in levels_object[level-1]:
             if player_rect.colliderect(platform_rect):
                 side = get_collision_side(player_rect, platform_rect)
                 if side == 'top':
                     player_rect.top = platform_rect.bottom
-                    if midAir: player_gravity = 0
+                    if midAir: 
+                        player_gravity = 0
+                        play_sound('wall')
                 elif side == 'bottom':
                     player_gravity = 0
                     player_rect.bottom = platform_rect.top + 2
                     midAir = False
                 elif side == 'right':
-                    if not midStrafe: player_direction *= -1
+                    if not midStrafe: 
+                        player_direction *= -1
+                        play_sound('wall')
                     else : player_rect.right = platform_rect.left
                 elif side == 'left':
-                    if not midStrafe: player_direction *= -1
+                    if not midStrafe: 
+                        player_direction *= -1
+                        play_sound('wall')
                     else : player_rect.left = platform_rect.right
                 
 
