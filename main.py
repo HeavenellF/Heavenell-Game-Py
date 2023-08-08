@@ -98,16 +98,16 @@ background_gameover_surf = pygame.image.load('image/gameoverBackground.png').con
 
 #====================================== mp3 ==============================#
 bgm_sound = pygame.mixer.Sound('sound/bgm.mp3')
-bgm_sound.set_volume(0.2)
+bgm_sound.set_volume(0.5)
 bgm_sound.play(-1)
 wallbounce1_sound = pygame.mixer.Sound('sound/wallhit1.mp3')
-wallbounce1_sound.set_volume(0.4)
+wallbounce1_sound.set_volume(0.8)
 wallbounce2_sound = pygame.mixer.Sound('sound/wallhit2.mp3')
-wallbounce2_sound.set_volume(0.4)
+wallbounce2_sound.set_volume(0.8)
 wallbounce3_sound = pygame.mixer.Sound('sound/wallhit3.mp3')
-wallbounce3_sound.set_volume(0.4)
+wallbounce3_sound.set_volume(0.8)
 jump_sound = pygame.mixer.Sound('sound/jump.mp3')
-jump_sound.set_volume(0.6)
+jump_sound.set_volume(0.9)
 #====================================== mp3 ==============================#
 
 
@@ -241,11 +241,9 @@ while True:
 
     # Gameplay
     if game_state == 1:
-        # Title and Background
-        screen.fill('white')
-
-        for platform_surf, platform_rect in levels_object[level-1]:
-            screen.blit(platform_surf, platform_rect)
+        # Blit
+        for surf, rect, _ in levels_object[level-1]:
+            screen.blit(surf, rect)
 
         # Jumping 
         if jumpCharge !=0 and jumpCharge <= 15:
@@ -271,28 +269,29 @@ while True:
                 player_direction *= -1
                 play_sound('wall')
 
-        for platform_surf, platform_rect in levels_object[level-1]:
-            if player_rect.colliderect(platform_rect):
-                side = get_collision_side(player_rect, platform_rect)
-                if side == 'top':
-                    player_rect.top = platform_rect.bottom
-                    if midAir: 
+        for platform_surf, platform_rect, platform in levels_object[level-1]:
+            if platform:
+                if player_rect.colliderect(platform_rect):
+                    side = get_collision_side(player_rect, platform_rect)
+                    if side == 'top':
+                        player_rect.top = platform_rect.bottom
+                        if midAir: 
+                            player_gravity = 0
+                            play_sound('wall')
+                    elif side == 'bottom':
                         player_gravity = 0
-                        play_sound('wall')
-                elif side == 'bottom':
-                    player_gravity = 0
-                    player_rect.bottom = platform_rect.top + 2
-                    midAir = False
-                elif side == 'right':
-                    if not midStrafe: 
-                        player_direction *= -1
-                        play_sound('wall')
-                    else : player_rect.right = platform_rect.left
-                elif side == 'left':
-                    if not midStrafe: 
-                        player_direction *= -1
-                        play_sound('wall')
-                    else : player_rect.left = platform_rect.right
+                        player_rect.bottom = platform_rect.top + 2
+                        midAir = False
+                    elif side == 'right':
+                        if not midStrafe: 
+                            player_direction *= -1
+                            play_sound('wall')
+                        else : player_rect.right = platform_rect.left
+                    elif side == 'left':
+                        if not midStrafe: 
+                            player_direction *= -1
+                            play_sound('wall')
+                        else : player_rect.left = platform_rect.right
                 
 
         if player_rect.top <= 0:
