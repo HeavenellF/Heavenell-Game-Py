@@ -51,6 +51,9 @@ def player_animation():
     elif player_gravity < 0 :
         player_index = 3
         player_surf = player_state[player_index]
+    elif tired:
+        player_index = 4
+        player_surf = player_state[player_index]
     else:
         player_index = 0
         player_surf = player_state[player_index]
@@ -67,6 +70,8 @@ def play_sound(type):
         elif random_number == 3 : wallbounce3_sound.play()
     elif type == 'jump':
         jump_sound.play()
+    elif type == 'fell':
+        fell_sound.play()
 
 
 
@@ -106,6 +111,8 @@ wallbounce3_sound = pygame.mixer.Sound('sound/wallhit3.mp3')
 wallbounce3_sound.set_volume(0.8)
 jump_sound = pygame.mixer.Sound('sound/jump.mp3')
 jump_sound.set_volume(0.9)
+fell_sound = pygame.mixer.Sound('sound/fell.mp3')
+fell_sound.set_volume(1)
 #====================================== mp3 ==============================#
 
 
@@ -118,7 +125,8 @@ player_stand = pygame.image.load('image/player/playerstand.png').convert_alpha()
 player_walk_1 = pygame.image.load('image/player/playerwalk1.png').convert_alpha()
 player_charge = pygame.image.load('image/player/playercharge.png').convert_alpha()
 player_jump = pygame.image.load('image/player/playerjump.png').convert_alpha()
-player_state = [player_stand, player_walk_1, player_charge, player_jump]
+player_fell = pygame.image.load('image/player/playerfell.png').convert_alpha()
+player_state = [player_stand, player_walk_1, player_charge, player_jump, player_fell]
 player_index = 0
 
 player_surf = player_state[player_index]
@@ -128,6 +136,9 @@ player_direction = 1
 jumpCharge = 0
 midAir = False
 midStrafe = False
+onAir = 0
+tired = False
+rest = 0
 
 mainMenu_elements = mainMenu_elements(width, height, font1, font3, button_surf1)
 gameOver_elements = gameOver_elements(width, height, font1, font3, button_surf1)
@@ -155,14 +166,14 @@ while True:
         if game_state == 1:
             # Keyboard press down
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE and not midAir:
+                if event.key == pygame.K_SPACE and not midAir and not tired:
                     jumpCharge += 0.3
                     midStrafe = False
-                if event.key == pygame.K_a and not midAir:
+                if event.key == pygame.K_a and not midAir and not tired:
                     player_direction = -1
                     if jumpCharge == 0:
                         midStrafe = True
-                if event.key == pygame.K_d and not midAir:
+                if event.key == pygame.K_d and not midAir and not tired:
                     player_direction = 1
                     if jumpCharge == 0:
                         midStrafe = True
@@ -272,6 +283,7 @@ while True:
                 player_direction *= -1
                 play_sound('wall')
 
+        onAir += 1
         for platform_surf, platform_rect, platform in levels_object[level-1]:
             if platform:
                 if player_rect.colliderect(platform_rect):
@@ -282,6 +294,15 @@ while True:
                             player_gravity = 0
                             play_sound('wall')
                     elif side == 'bottom':
+                        if player_gravity >= 30:
+                            tired = True
+                            midStrafe = False
+                            play_sound('fell')
+                        if tired:
+                            rest += 1
+                            if rest >= 90:
+                                tired = False
+                                rest = 0
                         player_gravity = 0
                         player_rect.bottom = platform_rect.top + 2
                         midAir = False
