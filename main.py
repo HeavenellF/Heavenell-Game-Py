@@ -55,8 +55,8 @@ def player_animation():
         player_surf = player_state[player_index]
 
     
-    if player_direction == 1:
-        player_surf = pygame.transform.flip(player_surf, True, False)
+    # if player_direction == 1:
+    #     player_surf = pygame.transform.flip(player_surf, True, False)
 
     
 
@@ -136,7 +136,8 @@ gameOver_elements = gameOver_elements(width, height, font1, font3, button_surf1)
 
 levels_object = [levelsobject.level1_object(width,height), 
                  levelsobject.level2_object(width,height), 
-                 levelsobject.level3_object(width,height)]
+                 levelsobject.level3_object(width,height),
+                 levelsobject.level4_object(width,height)]
 
 while True:
     for event in pygame.event.get():
