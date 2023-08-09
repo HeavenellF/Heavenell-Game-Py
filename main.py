@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import pygame
 import random
 from sys import exit
@@ -36,7 +37,7 @@ def start_game():
     pause_duration = 0
     midAir = False
     midStrafe = False
-    player_rect = player_surf.get_rect(midbottom= (width/2,820))
+    player_rect = player_surf.get_rect(midbottom= (1100,820))
 
 def player_animation():
     global player_surf, player_index
@@ -57,8 +58,6 @@ def player_animation():
     
     if player_direction == 1:
         player_surf = pygame.transform.flip(player_surf, True, False)
-
-    
 
 def play_sound(type):
     if type == 'wall':
@@ -90,7 +89,6 @@ pause_end = 0
 game_state = 0
 glint_button = None
 finish = False
-level = 0
 
 
 background_mainmenu_surf = pygame.image.load('image/mainmenuBackground.png').convert()
@@ -138,7 +136,9 @@ levels_object = [levelsobject.level1_object(width,height),
                  levelsobject.level2_object(width,height), 
                  levelsobject.level3_object(width,height),
                  levelsobject.level4_object(width,height),
-                 levelsobject.level5_object(width,height)]
+                 levelsobject.level5_object(width,height),
+                 levelsobject.level6_object(width,height)]
+level = 0
 
 while True:
     for event in pygame.event.get():
@@ -148,6 +148,7 @@ while True:
         
         # click to get the Cord of the Cursor
         if event.type == pygame.MOUSEBUTTONDOWN:
+            print(event.pos)
             if player_rect.collidepoint(event.pos):
                 player_gravity = -15
         
