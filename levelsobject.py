@@ -126,3 +126,32 @@ def level4_object(width, height):
     level4_object.append((platform6_surf, platform6_rect, True))
 
     return level4_object
+
+def level5_object(width, height):
+    level5_object = []
+
+    background_surf = pygame.image.load('image/level/level5/Background.png').convert()
+    background_rect = background_surf.get_rect(topleft=(0,0))
+    level5_object.append((background_surf, background_rect, False))
+
+    platform1_surf = pygame.image.load('image/level/level5/Platform1.png').convert_alpha()
+    platform1_rect = platform1_surf.get_rect(topleft=(-105, 865))
+    level5_object.append((platform1_surf, platform1_rect, True))
+
+    platform2_surf = pygame.image.load('image/level/level5/Platform2.png').convert_alpha()
+    platform2_rect = platform2_surf.get_rect(topleft=(920, 655))
+    level5_object.append((platform2_surf, platform2_rect, True))
+
+    platform3_surf = pygame.image.load('image/level/level5/Platform3.png').convert_alpha()
+    platform3_rect = platform3_surf.get_rect(topleft=(920, 382))
+    level5_object.append((platform3_surf, platform3_rect, True))
+
+    platform4_surf = pygame.image.load('image/level/level5/Platform4.png').convert_alpha()
+    platform4_rect = platform4_surf.get_rect(topleft=(131, 208))
+    level5_object.append((platform4_surf, platform4_rect, True))
+
+    platform5_surf = pygame.image.load('image/level/level5/Platform5.png').convert_alpha()
+    platform5_rect = platform5_surf.get_rect(topleft=(914, -28))
+    level5_object.append((platform5_surf, platform5_rect, True))
+
+    return level5_object
