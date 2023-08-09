@@ -55,8 +55,8 @@ def player_animation():
         player_surf = player_state[player_index]
 
     
-    # if player_direction == 1:
-    #     player_surf = pygame.transform.flip(player_surf, True, False)
+    if player_direction == 1:
+        player_surf = pygame.transform.flip(player_surf, True, False)
 
     
 
@@ -181,7 +181,7 @@ while True:
                     midStrafe = False
                 if event.key == pygame.K_d and midStrafe:
                     midStrafe = False
-                if event.key == pygame.K_SPACE and not midAir:
+                if event.key == pygame.K_SPACE and not midAir and jumpCharge != 0:
                     player_gravity = -1.3 * jumpCharge
                     jumpCharge = 0
                     midAir = True
@@ -293,7 +293,8 @@ while True:
                             player_direction *= -1
                             play_sound('wall')
                         else : player_rect.left = platform_rect.right
-                
+
+        # check if the Player reach top or bottom
         if player_rect.top <= 0:
             player_rect.top += height
             level += 1
@@ -304,6 +305,7 @@ while True:
         elif player_rect.top >= height:
             player_rect.top -= height
             level -= 1
+                
         player_animation()
         screen.blit(player_surf,player_rect)
         display_time(finish)
