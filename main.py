@@ -151,7 +151,8 @@ levels_object = [levelsobject.level1_object(width,height),
                  levelsobject.level6_object(width,height),
                  levelsobject.level7_object(width,height),
                  levelsobject.level8_object(width,height),
-                 levelsobject.levelend1_object(width,height)]
+                 levelsobject.levelend1_object(width,height),
+                 levelsobject.levelend2_object(width,height)]
 level = 0
 
 while True:
