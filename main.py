@@ -25,9 +25,8 @@ class Testtube(pygame.sprite.Sprite):
             if self.i >= 1:
                 self.rect.y += self.direction
                 self.i = 0
-        elif game_state == 4:
+        elif game_state == 4 and endingDuration == 0:
             self.rect.y += 1
-        print(self.rect.y)
 
     def update(self):
         self.move_animation()
@@ -58,7 +57,7 @@ def start_game():
     global game_state, level, start_time, pause_duration, midAir, midStrafe, player_rect
     bgm_sound.play(-1)
     game_state = 1
-    level = 9
+    level = 1
     start_time = pygame.time.get_ticks()
     pause_duration = 0
     midAir = False
@@ -75,7 +74,7 @@ def player_animation():
     elif jumpCharge != 0:
         player_index = 2
         player_surf = player_state[player_index]
-    elif player_gravity < 0 :
+    elif player_gravity < 0 or (player_rect.colliderect(testtube.sprite.rect) and game_state == 4):
         player_index = 3
         player_surf = player_state[player_index]
     elif tired:
@@ -119,6 +118,7 @@ pause_end = 0
 game_state = 0
 glint_button = None
 finish = False
+endingDuration = 0
 
 
 background_mainmenu_surf = pygame.image.load('image/mainmenuBackground.png').convert()
@@ -127,7 +127,8 @@ background_gameover_surf = pygame.image.load('image/gameoverBackground.png').con
 #====================================== mp3 ==============================#
 bgm_sound = pygame.mixer.Sound('sound/bgm.mp3')
 bgm_sound.set_volume(0.5)
-bgm_sound.stop()
+finish_sound = pygame.mixer.Sound('sound/finish.mp3')
+finish_sound.set_volume(0.5)
 wallbounce1_sound = pygame.mixer.Sound('sound/wallhit1.mp3')
 wallbounce1_sound.set_volume(0.8)
 wallbounce2_sound = pygame.mixer.Sound('sound/wallhit2.mp3')
@@ -363,10 +364,11 @@ while True:
             testtube.draw(screen)
             testtube.update()
             # Game Ending
-            if player_rect.centery <= 630 and player_rect.centerx >= 460 and player_rect.centerx <= 740:
-                timefinish_surf,timefinish_rect = display_time(finish=True)
-                bgm_sound.stop()
-                game_state = 4
+            if (player_rect.right >= 460 and player_rect.right <= 740) or (player_rect.left >= 460 and player_rect.left <= 740):
+                if player_rect.centery <= 630:
+                    timefinish_surf,timefinish_rect = display_time(finish=True)
+                    bgm_sound.stop()
+                    game_state = 4
         player_animation()
         screen.blit(player_surf,player_rect)
         display_time(finish)
@@ -418,8 +420,8 @@ while True:
         player_rect.y += player_gravity
         if midAir:
             player_rect.x += player_direction*10
-        if not midAir and player_rect.x != 600:
-            if player_rect.x <= 600:
+        if not midAir and player_rect.right != 600 and player_rect.left != 600:
+            if player_rect.centerx <= 600:
                 player_rect.x += player_direction
             else:
                 player_rect.x += player_direction
@@ -470,15 +472,19 @@ while True:
         testtube.draw(screen)
         testtube.update()
         if player_rect.colliderect(testtube.sprite.rect):
-                player_rect.bottom = 800
+            if endingDuration == 0:
+                finish_sound.play()
+                endingDuration = 1
+            elif endingDuration >= 250:
                 timefinish_surf,timefinish_rect = display_time(finish=True)
-                bgm_sound.stop()
+                endingDuration = 0
                 game_state = 3
+            else:
+                endingDuration += 1
+                
         player_animation()
         screen.blit(player_surf,player_rect)
         display_time(finish)
-
-
 
     pygame.display.update()
     clock.tick(fps)
