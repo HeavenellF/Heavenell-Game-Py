@@ -32,7 +32,7 @@ def display_time(finish):
 def start_game():
     global game_state, level, start_time, pause_duration, midAir, midStrafe, player_rect
     game_state = 1
-    level = 7
+    level = 9
     start_time = pygame.time.get_ticks()
     pause_duration = 0
     midAir = False
@@ -149,7 +149,9 @@ levels_object = [levelsobject.level1_object(width,height),
                  levelsobject.level4_object(width,height),
                  levelsobject.level5_object(width,height),
                  levelsobject.level6_object(width,height),
-                 levelsobject.level7_object(width,height)]
+                 levelsobject.level7_object(width,height),
+                 levelsobject.level8_object(width,height),
+                 levelsobject.levelend1_object(width,height)]
 level = 0
 
 while True:
@@ -290,11 +292,13 @@ while True:
                 if player_rect.colliderect(platform_rect):
                     side = get_collision_side(player_rect, platform_rect)
                     if side == 'top':
+                        print('top')
                         player_rect.top = platform_rect.bottom
                         if midAir: 
                             player_gravity = 0
                             play_sound('wall')
                     elif side == 'bottom':
+                        print('bottom')
                         if player_gravity >= 30:
                             tired = True
                             midStrafe = False
@@ -308,15 +312,17 @@ while True:
                         player_rect.bottom = platform_rect.top + 2
                         midAir = False
                     elif side == 'right':
+                        print('right')
                         if not midStrafe: 
                             player_direction *= -1
                             play_sound('wall')
-                        else : player_rect.right = platform_rect.left
+                        player_rect.right = platform_rect.left
                     elif side == 'left':
+                        print('left')
                         if not midStrafe: 
                             player_direction *= -1
                             play_sound('wall')
-                        else : player_rect.left = platform_rect.right
+                        player_rect.left = platform_rect.right
 
         # check if the Player reach top or bottom
         if player_rect.top <= 0:
