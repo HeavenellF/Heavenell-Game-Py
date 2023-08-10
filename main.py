@@ -7,6 +7,31 @@ from Button import mainMenu_elements, gameOver_elements
 from collision import get_collision_side
 import levelsobject
 
+class Testtube(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load('image/misc/testtube.png').convert_alpha()
+        self.rect = self.image.get_rect(center = (600, 250))
+        self.direction = 1
+        self.i = 0
+    
+    def move_animation(self):
+        if game_state == 1:
+            if self.rect.y >= 220:
+                self.direction *= -1
+            elif self.rect.y <= 180:
+                self.direction *= -1
+            self.i += 0.2
+            if self.i >= 1:
+                self.rect.y += self.direction
+                self.i = 0
+        elif game_state == 4:
+            self.rect.y += 1
+        print(self.rect.y)
+
+    def update(self):
+        self.move_animation()
+
 def display_time(finish):
     current_time = pygame.time.get_ticks() - start_time - pause_duration
     minutes = current_time // 60000
@@ -31,6 +56,7 @@ def display_time(finish):
 
 def start_game():
     global game_state, level, start_time, pause_duration, midAir, midStrafe, player_rect
+    bgm_sound.play(-1)
     game_state = 1
     level = 9
     start_time = pygame.time.get_ticks()
@@ -38,6 +64,7 @@ def start_game():
     midAir = False
     midStrafe = False
     player_rect = player_surf.get_rect(midbottom= (width/2,700))
+    testtube.sprite.rect.center = (600,250)
 
 def player_animation():
     global player_surf, player_index
@@ -73,8 +100,6 @@ def play_sound(type):
     elif type == 'fell':
         fell_sound.play()
 
-
-
 width = 1200
 height = 900
 fps = 60
@@ -102,7 +127,7 @@ background_gameover_surf = pygame.image.load('image/gameoverBackground.png').con
 #====================================== mp3 ==============================#
 bgm_sound = pygame.mixer.Sound('sound/bgm.mp3')
 bgm_sound.set_volume(0.5)
-bgm_sound.play(-1)
+bgm_sound.stop()
 wallbounce1_sound = pygame.mixer.Sound('sound/wallhit1.mp3')
 wallbounce1_sound.set_volume(0.8)
 wallbounce2_sound = pygame.mixer.Sound('sound/wallhit2.mp3')
@@ -114,7 +139,6 @@ jump_sound.set_volume(0.9)
 fell_sound = pygame.mixer.Sound('sound/fell.mp3')
 fell_sound.set_volume(1)
 #====================================== mp3 ==============================#
-
 
 pause_surf = font3.render('Pause', True, 'Black')
 pause_rect = pause_surf.get_rect(midbottom=(width / 2, height / 2))
@@ -139,6 +163,9 @@ midStrafe = False
 onAir = 0
 tired = False
 rest = 0
+
+testtube = pygame.sprite.GroupSingle()
+testtube.add(Testtube())
 
 mainMenu_elements = mainMenu_elements(width, height, font1, font3, button_surf1)
 gameOver_elements = gameOver_elements(width, height, font1, font3, button_surf1)
@@ -300,7 +327,6 @@ while True:
                             player_gravity = 0
                             play_sound('wall')
                     elif side == 'bottom':
-                        print('bottom')
                         if player_gravity >= 30:
                             tired = True
                             midStrafe = False
@@ -314,13 +340,11 @@ while True:
                         player_rect.bottom = platform_rect.top + 2
                         midAir = False
                     elif side == 'right':
-                        print('right')
                         if not midStrafe: 
                             player_direction *= -1
                             play_sound('wall')
                         player_rect.right = platform_rect.left
                     elif side == 'left':
-                        print('left')
                         if not midStrafe: 
                             player_direction *= -1
                             play_sound('wall')
@@ -330,14 +354,19 @@ while True:
         if player_rect.top <= 0:
             player_rect.top += height
             level += 1
-            if level == len(levels_object) + 1:
-                player_rect.bottom = 800
-                timefinish_surf,timefinish_rect = display_time(finish=True)
-                game_state = 3
         elif player_rect.top >= height:
             player_rect.top -= height
             level -= 1
-                
+        
+        # showing Testtube
+        if level == len(levels_object):
+            testtube.draw(screen)
+            testtube.update()
+            # Game Ending
+            if player_rect.centery <= 630 and player_rect.centerx >= 460 and player_rect.centerx <= 740:
+                timefinish_surf,timefinish_rect = display_time(finish=True)
+                bgm_sound.stop()
+                game_state = 4
         player_animation()
         screen.blit(player_surf,player_rect)
         display_time(finish)
@@ -379,6 +408,76 @@ while True:
         if glint_button == 'play': pygame.draw.rect(screen, 'Black', mainMenu_elements['button_rectPlay'], 4)
         elif glint_button == 'setting': pygame.draw.rect(screen, 'Black', mainMenu_elements['button_rectSetting'], 4)
         elif glint_button == 'exit': pygame.draw.rect(screen, 'Black', mainMenu_elements['button_rectExit'], 4)
+
+    # Game Ending
+    elif game_state == 4:
+        # Blit
+        for surf, rect, _ in levels_object[level-1]:
+            screen.blit(surf, rect)
+        player_gravity += 0.6
+        player_rect.y += player_gravity
+        if midAir:
+            player_rect.x += player_direction*10
+        if not midAir and player_rect.x != 600:
+            if player_rect.x <= 600:
+                player_rect.x += player_direction
+            else:
+                player_rect.x += player_direction
+
+        onAir += 1
+        for platform_surf, platform_rect, platform in levels_object[level-1]:
+            if platform:
+                if player_rect.colliderect(platform_rect):
+                    side = get_collision_side(player_rect, platform_rect)
+                    if side == 'top':
+                        print('top')
+                        player_rect.top = platform_rect.bottom
+                        if midAir: 
+                            player_gravity = 0
+                            play_sound('wall')
+                    elif side == 'bottom':
+                        if player_gravity >= 30:
+                            tired = True
+                            midStrafe = False
+                            play_sound('fell')
+                        if tired:
+                            rest += 1
+                            if rest >= 90:
+                                tired = False
+                                rest = 0
+                        player_gravity = 0
+                        player_rect.bottom = platform_rect.top + 2
+                        midAir = False
+                    elif side == 'right':
+                        if not midStrafe: 
+                            player_direction *= -1
+                            play_sound('wall')
+                        player_rect.right = platform_rect.left
+                    elif side == 'left':
+                        if not midStrafe: 
+                            player_direction *= -1
+                            play_sound('wall')
+                        player_rect.left = platform_rect.right
+
+        # check if the Player reach top or bottom
+        if player_rect.top <= 0:
+            player_rect.top += height
+            level += 1
+        elif player_rect.top >= height:
+            player_rect.top -= height
+            level -= 1
+        
+        testtube.draw(screen)
+        testtube.update()
+        if player_rect.colliderect(testtube.sprite.rect):
+                player_rect.bottom = 800
+                timefinish_surf,timefinish_rect = display_time(finish=True)
+                bgm_sound.stop()
+                game_state = 3
+        player_animation()
+        screen.blit(player_surf,player_rect)
+        display_time(finish)
+
 
 
     pygame.display.update()
