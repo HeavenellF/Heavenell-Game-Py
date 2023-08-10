@@ -32,12 +32,12 @@ def display_time(finish):
 def start_game():
     global game_state, level, start_time, pause_duration, midAir, midStrafe, player_rect
     game_state = 1
-    level = 1
+    level = 7
     start_time = pygame.time.get_ticks()
     pause_duration = 0
     midAir = False
     midStrafe = False
-    player_rect = player_surf.get_rect(midbottom= (1100,820))
+    player_rect = player_surf.get_rect(midbottom= (width/2,700))
 
 def player_animation():
     global player_surf, player_index
@@ -148,7 +148,8 @@ levels_object = [levelsobject.level1_object(width,height),
                  levelsobject.level3_object(width,height),
                  levelsobject.level4_object(width,height),
                  levelsobject.level5_object(width,height),
-                 levelsobject.level6_object(width,height)]
+                 levelsobject.level6_object(width,height),
+                 levelsobject.level7_object(width,height)]
 level = 0
 
 while True:
