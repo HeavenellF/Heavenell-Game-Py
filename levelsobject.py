@@ -363,4 +363,33 @@ def levelend2_object(width, height):
     platform10_rect = platform10_surf.get_rect(center=(1000, -80))
     levelend2_object.append((platform10_surf, platform10_rect, True))
 
+    platform11_surf = pygame.image.load('image/level/levelend2/Platform11.png').convert_alpha()
+    platform11_rect = platform11_surf.get_rect(center=(600, 0))
+    levelend2_object.append((platform11_surf, platform11_rect, True))
+
     return levelend2_object
+
+def levelend3_object(width, height):
+    levelend3_object = []
+
+    background_surf = pygame.image.load('image/level/levelend3/Background.png').convert()
+    background_rect = background_surf.get_rect(topleft=(0,0))
+    levelend3_object.append((background_surf, background_rect, False))
+
+    platform1_surf = pygame.image.load('image/level/levelend3/Platform1.png').convert_alpha()
+    platform1_rect = platform1_surf.get_rect(center=(200, 795))
+    levelend3_object.append((platform1_surf, platform1_rect, True))
+
+    platform2_surf = pygame.image.load('image/level/levelend3/Platform2.png').convert_alpha()
+    platform2_rect = platform1_surf.get_rect(center=(1000, 795))
+    levelend3_object.append((platform2_surf, platform2_rect, True))
+
+    platform3_surf = pygame.image.load('image/level/levelend3/Platform3.png').convert_alpha()
+    platform3_rect = platform3_surf.get_rect(center=(600, 900))
+    levelend3_object.append((platform3_surf, platform3_rect, True))
+
+    platform4_surf = pygame.image.load('image/level/levelend3/Platform4.png').convert_alpha()
+    platform4_rect = platform4_surf.get_rect(center=(600, 630))
+    levelend3_object.append((platform4_surf, platform4_rect, True))
+
+    return levelend3_object
