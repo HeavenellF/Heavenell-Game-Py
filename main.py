@@ -192,7 +192,6 @@ while True:
         
         # click to get the Cord of the Cursor
         if event.type == pygame.MOUSEBUTTONDOWN:
-            print(event.pos)
             if player_rect.collidepoint(event.pos):
                 player_gravity = -15
         
@@ -322,7 +321,6 @@ while True:
                 if player_rect.colliderect(platform_rect):
                     side = get_collision_side(player_rect, platform_rect)
                     if side == 'top':
-                        print('top')
                         player_rect.top = platform_rect.bottom
                         if midAir: 
                             player_gravity = 0
@@ -432,7 +430,6 @@ while True:
                 if player_rect.colliderect(platform_rect):
                     side = get_collision_side(player_rect, platform_rect)
                     if side == 'top':
-                        print('top')
                         player_rect.top = platform_rect.bottom
                         if midAir: 
                             player_gravity = 0
