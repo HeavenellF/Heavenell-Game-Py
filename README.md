@@ -8,5 +8,5 @@ A simple Python game where players can Jump from a Platform into another Platfor
 **Move** : press A or D to move Left or Right
 
 ## Screenshot
-![Main Menu](misc/screenshot1.png)
-![Gameplay](misc/screenshot2.png)
+![Main Menu](image/misc/screenshot1.png)
+![Gameplay](image/misc/screenshot2.png)
