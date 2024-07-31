@@ -107,9 +107,9 @@ pygame.init()
 screen = pygame.display.set_mode((width,height))
 pygame.display.set_caption('Agent J')    # Window Name here
 clock = pygame.time.Clock()
-font1 = pygame.font.Font('font/pandabakery.ttf', 97)
-font2 = pygame.font.Font('font/pandabakery.ttf', 30)
-font3 = pygame.font.Font('font/pandabakery.ttf', 60)
+font1 = pygame.font.SysFont('comicsansms', 97)
+font2 = pygame.font.SysFont('comicsansms', 30)
+font3 = pygame.font.SysFont('comicsansms', 60)
 
 start_time = 0
 pause_duration = 0
@@ -361,7 +361,7 @@ while True:
         if level == len(levels_object):
             testtube.draw(screen)
             testtube.update()
-            # Game Ending
+            # Game Endingn
             if (player_rect.right >= 460 and player_rect.right <= 740) or (player_rect.left >= 460 and player_rect.left <= 740):
                 if player_rect.centery <= 630:
                     timefinish_surf,timefinish_rect = display_time(finish=True)
